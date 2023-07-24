@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="OrangeTwins" type="material">#F5831F</color>
+    <color name="OrangeTwinsLight" type="material">#FFEFE8</color>
+    <color name="categorieGray" type="material">#808285</color>
+    <color name="TextGray" type="material">#9D9D9D</color>
+    <color name="btnGray" type="material">#D9D9D9</color>
+
+
+</resources>
