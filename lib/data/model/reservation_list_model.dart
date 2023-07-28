@@ -130,6 +130,8 @@ class Hebergement {
   int? nbreLit;
   int? nbreSaleBain;
   int? prix;
+  int? lat;
+  int? long;
   String? status;
   String? createdAt;
   String? updatedAt;
@@ -149,6 +151,8 @@ class Hebergement {
       this.nbreLit,
       this.nbreSaleBain,
       this.prix,
+      this.lat,
+      this.long,
       this.status,
       this.createdAt,
       this.updatedAt});
@@ -168,6 +172,8 @@ class Hebergement {
     nbreLit = json['nbre_lit'];
     nbreSaleBain = json['nbre_sale_bain'];
     prix = json['prix'];
+    lat = json['lat'];
+    long = json['long'];
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -189,6 +195,8 @@ class Hebergement {
     data['nbre_lit'] = this.nbreLit;
     data['nbre_sale_bain'] = this.nbreSaleBain;
     data['prix'] = this.prix;
+    data['lat'] = this.lat;
+    data['long'] = this.long;
     data['status'] = this.status;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;

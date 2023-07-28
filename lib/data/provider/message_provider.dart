@@ -25,7 +25,7 @@ class MessageProvider {
         url,
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer  ${token.accesstoken}',
+          'Authorization': 'Bearer  ${token.accessToken}',
         },
       );
       log('codepromotion' + response.statusCode.toString());
@@ -61,7 +61,7 @@ class MessageProvider {
         url,
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer  ${token.accesstoken}',
+          'Authorization': 'Bearer  ${token.accessToken}',
         },
       );
       log('codepromotion' + response.statusCode.toString());
@@ -90,7 +90,7 @@ class MessageProvider {
     var url = Uri.parse(
       'http://sunrise-housing.net/api/messages/$id',
     );
-    var headers = {'Authorization': 'Bearer  ${token.accesstoken}'};
+    var headers = {'Authorization': 'Bearer  ${token.accessToken}'};
 
     var request = http.MultipartRequest(
       'POST',
@@ -125,7 +125,7 @@ class MessageProvider {
     AccessToken token = await AuthProvider().getToken();
 
     var url = Uri.parse('http://sunrise-housing.net/api/messages');
-    var headers = {'Authorization': 'Bearer ${token.accesstoken}'};
+    var headers = {'Authorization': 'Bearer ${token.accessToken}'};
 
     var request = http.MultipartRequest('POST', url);
     request.fields['id_user_proprio'] = idUserProprio;
@@ -156,7 +156,7 @@ class MessageProvider {
 
   //   var response = await http.post(url, headers: {
   //     'Accept': 'application/json',
-  //     'Authorization': 'Bearer  ${token.accesstoken}',
+  //     'Authorization': 'Bearer  ${token.AccessToken}',
   //   }, body: {
   //     "message": message
   //   });

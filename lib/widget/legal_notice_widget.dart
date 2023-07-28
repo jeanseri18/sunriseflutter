@@ -27,7 +27,7 @@ class _LegalNoticePageState extends State<LegalNoticePage> {
                   (context),
                   MaterialPageRoute(
                     builder: (context) => HomeParentPage(
-                      index: 3,
+                      index: 4,
                       isexpireToken: widget.isexpireToken,
                     ),
                   ));

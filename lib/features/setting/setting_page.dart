@@ -89,73 +89,95 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget buildTokenValidColmun() {
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       // _buildListTileItem(
       //   Icons.favorite,
       //   'Mes favoris',
       //   Container(),
       // ),
       Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildListTileItem(
-          Icons.edit,
-          'Information personnelle',
-          ProfilePage(isexpireToken: widget.isexpireToken),
-        ),
-        _buildListTileItem(
-          Icons.password_sharp,
-          'Paiement',
-          PaimentHistoryPage(
-            isexpireToken: widget.isexpireToken,
-          ),
-        )
-      ])),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+            Text(
+              'Profile',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            _buildListTileItem(
+              Icons.edit,
+              'Information personnelle',
+              ProfilePage(isexpireToken: widget.isexpireToken),
+            ),
+            _buildListTileItem(
+              Icons.password_sharp,
+              'Paiement',
+              PaimentHistoryPage(
+                isexpireToken: widget.isexpireToken,
+              ),
+            )
+          ])),
 
       Divider(),
       Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildListTileItem(
-          Icons.price_change,
-          'Mes annonces',
-          HebegementPostListPage(
-            isexpireToken: widget.isexpireToken,
-            isSettingPageBack: true,
-          ),
-        ),
-        _buildListTileItem(
-          Icons.calendar_month,
-          'Mes commandes',
-          OrderPage(
-            isexpireToken: widget.isexpireToken,
-          ),
-        )
-      ])),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+            Text(
+              'Espace Pro',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            _buildListTileItem(
+              Icons.price_change,
+              'Mes annonces',
+              HebegementPostListPage(
+                isexpireToken: widget.isexpireToken,
+                isSettingPageBack: true,
+              ),
+            ),
+            _buildListTileItem(
+              Icons.calendar_month,
+              'Demande de reservation',
+              OrderPage(
+                isexpireToken: widget.isexpireToken,
+              ),
+            )
+          ])),
 
       Divider(),
+
       Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildListTileItem(
-          Icons.price_change,
-          'A propos ',
-          LegalNoticePage(
-            isexpireToken: widget.isexpireToken,
-          ),
-        ),
-        _buildListTileItem(
-          Icons.calendar_month,
-          'Condition general',
-          LegalNoticePage(
-            isexpireToken: widget.isexpireToken,
-          ),
-        ),
-        _buildListTileItem(
-          Icons.headset_mic_rounded,
-          'Assistance clientele',
-          AssistanceChatWidget(
-            isexpireToken: widget.isexpireToken,
-          ),
-        )
-      ])),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+            Text(
+              'Autre',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            _buildListTileItem(
+              Icons.price_change,
+              'A propos ',
+              LegalNoticePage(
+                isexpireToken: widget.isexpireToken,
+              ),
+            ),
+            _buildListTileItem(
+              Icons.calendar_month,
+              'Condition general',
+              LegalNoticePage(
+                isexpireToken: widget.isexpireToken,
+              ),
+            ),
+            _buildListTileItem(
+              Icons.headset_mic_rounded,
+              'Assistance clientele',
+              AssistanceChatWidget(
+                isexpireToken: widget.isexpireToken,
+              ),
+            )
+          ])),
       Divider(),
       ListTile(
           onTap: () async {

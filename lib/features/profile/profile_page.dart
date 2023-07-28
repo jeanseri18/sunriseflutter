@@ -1,6 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:sunrise_hosting/data/model/user_model.dart';
+import 'package:sunrise_hosting/data/provider/auth_provider.dart';
 import 'package:sunrise_hosting/features/home/home_parent_page.dart';
 import 'package:sunrise_hosting/gen/colors.gen.dart';
+import 'package:flutter_intl/flutter_intl.dart';
+import 'package:intl/intl.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.isexpireToken});
@@ -14,8 +20,50 @@ class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _villeController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _dateController = TextEditingController();
+
   var invisible = true;
+  var _selectedDateFin;
+  Future<void> _selectDateFin() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(
+          days:
+              365)), // Permet de sélectionner une date jusqu'à un an à l'avance
+    );
+    if (picked != null && picked != _selectedDateFin) {
+      setState(() {
+        _selectedDateFin = picked;
+        _dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+  }
+
+  var id = 0;
+  User response = User();
+  @override
+  Future getData() async {
+    response = await AuthProvider().getUserInfo();
+    inspect(response.id.toString());
+    setState(() {
+      _emailController.text = response.email.toString();
+      _phoneController.text = response.telephone.toString();
+      _dateController.text = response.birthday.toString();
+      _nameController.text = response.name.toString();
+      id = response.id!;
+    });
+  }
+
+  @override
+  void initState() {
+    getData();
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   (context),
                   MaterialPageRoute(
                     builder: (context) => HomeParentPage(
-                      index: 3,
+                      index: 4,
                       isexpireToken: widget.isexpireToken,
                     ),
                   ));
@@ -130,7 +178,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 return null;
               },
-              controller: _emailController,
+              controller: _nameController,
             ),
           ),
           const SizedBox(
@@ -159,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 return null;
               },
-              controller: _emailController,
+              controller: _phoneController,
             ),
           ),
           const SizedBox(
@@ -177,6 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(
             height: 55,
             child: TextFormField(
+              onTap: _selectDateFin,
               keyboardType: TextInputType.datetime,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.email),
@@ -189,7 +238,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 return null;
               },
-              controller: TextEditingController(),
+              controller: _dateController,
             ),
           ),
           const SizedBox(
@@ -207,6 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(
             height: 55,
             child: TextFormField(
+              readOnly: true,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.email),
                 hintText: '',
@@ -224,43 +274,43 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            'Mot de passe',
-            style: TextStyle(
-                fontSize: 13, fontFamily: 'Poppins', color: Colors.black),
-            textAlign: TextAlign.start,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          SizedBox(
-            height: 55,
-            child: TextFormField(
-              obscureText: invisible,
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.password_rounded),
-                suffixIcon: IconButton(
-                    icon: const Icon(Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        invisible ? invisible = false : invisible = true;
-                      });
-                    }),
-                hintText: '',
-              ),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Ce champ ne peut etre vide';
-                }
+          // const Text(
+          //   'Mot de passe',
+          //   style: TextStyle(
+          //       fontSize: 13, fontFamily: 'Poppins', color: Colors.black),
+          //   textAlign: TextAlign.start,
+          // ),
+          // const SizedBox(
+          //   height: 5,
+          // ),
+          // SizedBox(
+          //   height: 55,
+          //   child: TextFormField(
+          //     obscureText: invisible,
+          //     decoration: InputDecoration(
+          //       prefixIcon: const Icon(Icons.password_rounded),
+          //       suffixIcon: IconButton(
+          //           icon: const Icon(Icons.visibility),
+          //           onPressed: () {
+          //             setState(() {
+          //               invisible ? invisible = false : invisible = true;
+          //             });
+          //           }),
+          //       hintText: '',
+          //     ),
+          //     validator: (value) {
+          //       if (value!.isEmpty) {
+          //         return 'Ce champ ne peut etre vide';
+          //       }
 
-                return null;
-              },
-              controller: _passwordController,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
+          //       return null;
+          //     },
+          //     controller: _passwordController,
+          //   ),
+          // ),
+          // const SizedBox(
+          //   height: 20,
+          // ),
           const SizedBox(
             height: 20,
           ),
@@ -273,7 +323,9 @@ class _ProfilePageState extends State<ProfilePage> {
       height: 50,
       width: MediaQuery.of(context).size.width,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          // context.read()
+        },
         child: const Text(
           'Modifier',
           style: TextStyle(

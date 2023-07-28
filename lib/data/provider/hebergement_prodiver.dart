@@ -21,7 +21,79 @@ class HebergementProvider {
         url,
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer  ${token..accesstoken}',
+          'Authorization': 'Bearer  ${token.accessToken}',
+        },
+      );
+      log('codepromotion' + response.statusCode.toString());
+      log(jsonDecode(response.body).toString());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        responses = HebergementModel.fromJson(jsonDecode(response.body));
+        inspect(response);
+        return responses;
+      }
+      // responses =reponses ;
+      log(responses.toString());
+
+      return responses;
+    } catch (error, stacktrace) {
+      // print("Exception occured: $error stackTrace: $stacktrace");
+      log(responses.toString());
+      return responses;
+    }
+  }
+
+  Future<HebergementModel> getListHebergementByType(String type) async {
+    HebergementModel responses = HebergementModel();
+
+    AccessToken token = await AuthProvider().getToken();
+    try {
+      var url = Uri.parse(
+        'http://sunrise-housing.net/api/hebergement/type/$type',
+      );
+
+      log('promotion');
+
+      var response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer  ${token.accessToken}',
+        },
+      );
+      log('codepromotion' + response.statusCode.toString());
+      log(jsonDecode(response.body).toString());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        responses = HebergementModel.fromJson(jsonDecode(response.body));
+        inspect(response);
+        return responses;
+      }
+      // responses =reponses ;
+      log(responses.toString());
+
+      return responses;
+    } catch (error, stacktrace) {
+      // print("Exception occured: $error stackTrace: $stacktrace");
+      log(responses.toString());
+      return responses;
+    }
+  }
+
+  Future<HebergementModel> getListHebergementById() async {
+    HebergementModel responses = HebergementModel();
+
+    AccessToken token = await AuthProvider().getToken();
+    try {
+      var url = Uri.parse(
+        'http://sunrise-housing.net/api/hebergement/byId/user',
+      );
+
+      log('promotion');
+
+      var response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer  ${token.accessToken}',
         },
       );
       log('codepromotion' + response.statusCode.toString());

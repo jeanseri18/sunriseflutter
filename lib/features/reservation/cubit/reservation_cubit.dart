@@ -10,6 +10,10 @@ part 'reservation_state.dart';
 
 class ReservationCubit extends Cubit<ReservationState> {
   ReservationCubit() : super(ReservationInitial());
+  void resetState() {
+    emit(ReservationInitial());
+  }
+
   Future getReservationList() async {
     final ReservationProvider _ReservationProviderProvider =
         ReservationProvider();

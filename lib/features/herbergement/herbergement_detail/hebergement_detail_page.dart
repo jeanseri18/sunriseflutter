@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sunrise_hosting/data/model/hebergement_list_model.dart';
 import 'package:sunrise_hosting/features/notification/cubit/message_cubit.dart';
 import 'package:sunrise_hosting/features/reservation/cubit/reservation_cubit.dart';
@@ -18,26 +22,76 @@ class _hebergementDetailPageState extends State<hebergementDetailPage> {
   bool climatisationChecked = false;
   bool televisionChecked = false;
   bool cuisineChecked = true;
+
+  GoogleMapController? mapController;
   final TextEditingController _textController = TextEditingController();
+  var lat = 0.0;
+  var lng = 0.0;
+  LatLng newlatlang = LatLng(0.0, 0.0);
+  @override
+  void initState() {
+    lat = double.parse(widget.model.lat!.toString());
+    lng = double.parse(widget.model.long!.toString());
+
+    newlatlang = LatLng(lat, lng);
+    log(newlatlang.toString());
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Detail de l annonce'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.amber,
-                  image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage(
-                        Assets.images.test.path,
-                      )),
-                  borderRadius: const BorderRadius.all(Radius.circular(0))),
-              height: 280,
+            CarouselSlider(
+              options: CarouselOptions(height: 300.0),
+              items: widget.model.images?.map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: BoxDecoration(
+                          color: Colors.amber,
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(i.fileUrl!)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(0))),
+                      height: 250,
+                    );
+                    // Container(
+                    //     width: MediaQuery.of(context).size.width,
+                    //     margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    //     decoration: BoxDecoration(color: Colors.amber),
+                    //     child: Text(
+                    //       'text $i',
+                    //       style: TextStyle(fontSize: 16.0),
+                    //     ));
+                  },
+                );
+              }).toList(),
             ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //       color: Colors.amber,
+            //       image: DecorationImage(
+            //           fit: BoxFit.cover,
+            //           image: AssetImage(
+            //             Assets.images.test.path,
+            //           )),
+            //       borderRadius: const BorderRadius.all(Radius.circular(0))),
+            //   height: 280,
+            // ),
             Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -202,36 +256,46 @@ class _hebergementDetailPageState extends State<hebergementDetailPage> {
                             showModalBottomSheet(
                               context: context,
                               builder: (BuildContext context) {
-                                return Container(
-                                  height: 250,
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: TextField(
-                                          maxLength: 600,
-                                          decoration: InputDecoration(
-                                            hintText: 'Entrez votre message ',
-                                          ),
-                                          controller: _textController,
+                                return SingleChildScrollView(
+                                  // Ajout du SingleChildScrollView
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.8,
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: TextField(
+                                                decoration: InputDecoration(
+                                                  hintText:
+                                                      'Entrez votre message',
+                                                ),
+                                                controller: _textController,
+                                              ),
+                                            ),
+                                            SizedBox(width: 16.0),
+                                            ElevatedButton(
+                                              child: Text('Envoyer'),
+                                              onPressed: () {
+                                                context
+                                                    .read<MessageReplyCubit>()
+                                                    .getMessagePost(
+                                                      _textController.text,
+                                                      widget.model.idUser
+                                                          .toString(),
+                                                    );
+                                                // Handle sending the message
+                                                Navigator.of(context).pop();
+                                                _textController.text = '';
+                                              },
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      SizedBox(width: 16.0),
-                                      ElevatedButton(
-                                        child: Text('Envoyer'),
-                                        onPressed: () {
-                                          context
-                                              .read<MessageReplyCubit>()
-                                              .getMessagePost(
-                                                  _textController.text,
-                                                  widget.model.idUser
-                                                      .toString());
-                                          // Handle sending the message
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
@@ -249,10 +313,61 @@ class _hebergementDetailPageState extends State<hebergementDetailPage> {
                           widget.model.user?.name! ?? '',
                         ),
                       ),
+                      BlocConsumer<MessageCubit, MessageState>(
+                        builder: (context, state) {
+                          return Container();
+                        },
+                        listener: (context, state) {
+                          // return Container();
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Divider(),
+                      Text(
+                        'Adresse',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 22),
+                      ),
                       SizedBox(
                         height: 10,
                       ),
-                      Divider(),
+                      Text(
+                        widget.model.adresse!.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        height: 200,
+                        child: GoogleMap(
+                          // myLocationButtonEnabled: true,
+                          zoomControlsEnabled: true,
+                          // markers: _markers.values.toSet(),
+                          // mapType: MapType.normal,
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                                newlatlang.latitude, newlatlang.longitude),
+                            zoom: 7,
+                          ),
+                          onMapCreated: (controller) async {
+                            String value = await DefaultAssetBundle.of(context)
+                                .loadString('assets/map_style.json');
+                            // controller.setMapStyle(value);
+                            // setState(() {
+                            //   mapController = controller;
+                            //   log('message');
+                            // });
+                          },
+                        ),
+                      ),
                     ])),
           ])),
       bottomNavigationBar: Padding(
@@ -273,7 +388,7 @@ class _hebergementDetailPageState extends State<hebergementDetailPage> {
             child: const Text(
               'Commandez ',
               style: TextStyle(
-                  fontSize: 15, fontFamily: 'Poppins', color: Colors.white),
+                  fontSize: 15, fontFamily: 'Poppins', color: Colors.black),
             ),
           ),
         ),

@@ -44,7 +44,7 @@ class _ReservationFormPageState extends State<ReservationFormPage> {
   @override
   void initState() {
     // ...
-
+    context.read<ReservationCubit>().resetState();
     // Ajouter un écouteur pour les changements de texte des champs "Montant" et "Nombre de personne"
     _montantController.addListener(_updateTotal);
     _nbrePersonController.addListener(_updateTotal);

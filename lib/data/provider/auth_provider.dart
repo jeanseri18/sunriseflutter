@@ -93,10 +93,10 @@ class AuthProvider {
       if (responses.statusCode == 200) {
         var responseData = await responses.stream.bytesToString();
         var json = jsonDecode(responseData);
-
+        print(json);
         var token = json['access_token'];
         inspect(json['expires_in']);
-        var expiresIn = DateTime.parse(json['expires_in']);
+        var expiresIn = DateTime.parse(json['expires_in'].toString());
         inspect(expiresIn);
         var userJson = json['user'];
         var user = User.fromJson(userJson);
@@ -161,8 +161,8 @@ class AuthProvider {
     log('+++++++++++++++++++++++++6+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
     log('++++++++++++++++++++++++++++88445++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
     var response = AccessToken.fromJson(decodedMap);
-    log('show token model.....${response.accesstoken}');
-    log('show refresh model.....${response.expiresin}');
+    log('show token model.....${response.accessToken}');
+    log('show refresh model.....${response.expiresIn}');
     return response;
   }
 

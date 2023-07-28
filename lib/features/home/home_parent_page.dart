@@ -1,4 +1,14 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sunrise_hosting/data/model/token_model.dart';
+import 'package:sunrise_hosting/data/provider/auth_provider.dart';
+import 'package:sunrise_hosting/features/home/home_loader.dart';
+import 'package:sunrise_hosting/features/onboard/onboard_page.dart';
+import 'package:sunrise_hosting/features/reservation/reservation_home_page.dart';
+import 'package:sunrise_hosting/features/reservation/reservation_page.dart';
 import 'package:sunrise_hosting/gen/colors.gen.dart';
 import 'package:sunrise_hosting/features/home/home_error_auth_redirection_page.dart';
 import 'package:sunrise_hosting/features/home/home_page.dart';
@@ -17,59 +27,90 @@ class HomeParentPage extends StatefulWidget {
 
 class _HomeParentPageState extends State<HomeParentPage> {
   int _selectedIndex = 0;
-  // void verify() async {
-  //   var result = await AuthProvider().isTokenValid();
-  //   if (result == true) {
-  //   } else {
-  //     await refreshingViaLogin();
-  //   }
-  // }
+  Future<bool> isTokenValid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? encodedMap = prefs.getString('token');
 
-  // Future<void> refreshingViaLogin() async {
-  //   WidgetsFlutterBinding.ensureInitialized();
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   var type = prefs.getString('type');
-  //   if (type == 'phone') {
-  //     var number = prefs.getString('phoneOrEmail');
+    if (encodedMap == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => OnBoardPage()),
+      );
+      // Token is not present, so it is not valid
+      return false;
+    }
 
-  //     var result = await AuthProvider().loginViaOtp(number!);
-  //     log('login telephone$result');
-  //     Navigator.pushAndRemoveUntil(
-  //         (context),
-  //         MaterialPageRoute(
-  //           builder: (context) => SmsVerificationPage(
-  //             number: number,
-  //             sendIsActiv: false,
-  //           ),
-  //         ),
-  //         (route) => true);
-  //   } else {
-  //     var email = prefs.getString('phoneOrEmail');
+    var decodedMap = json.decode(encodedMap);
+    var response = AccessToken.fromJson(decodedMap);
 
-  //     var result = await AuthProvider().loginViaEmail(email!, type!);
-  //     log('login email$result');
+    // Check if the token is expired
+    if (response.expiresIn != null) {
+      var expiresIn = DateTime.parse(response.expiresIn!.toString());
+      if (expiresIn.isAfter(DateTime.now())) {
+        // Token is still valid
+        print('value');
+        return true;
+      }
+    }
 
-  //     if (result.data != null) {
-  //       var userInfo = UserModel.fromJson(result.data);
-  //       if (userInfo.status! == 'inactif') {
-  //         log('inactif');
-  //         // ignore: use_build_context_synchronously
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //               builder: (context) =>
-  //                   SmsVerificationPage(number: userInfo.phone!)),
-  //         );
-  //       }
-  //     } else {
-  //       log('error');
-  //     }
-  //   }
-  // }
+    // Token is either missing or expired
+    return false;
+  }
+
+  Future refreshingViaLogin() async {
+    bool tokenIsValid = await isTokenValid();
+
+    if (!tokenIsValid) {
+      print('object');
+      // Token is valid, redirect to HomePage
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) => HomeParentPage(
+      //             index: 0,
+      //             isexpireToken: false,
+      //           )),
+      // );
+    } else {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var email = prefs.getString('phoneOrEmail');
+      var password = prefs.getString('password');
+      print(email);
+      print(password);
+      // Replace with actual user password
+      var response = await AuthProvider().loginUser(email!, password!);
+      inspect(response);
+      if (response.status!) {
+        // Login successful, redirect to HomePage
+        // ignore: use_build_context_synchronously
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => const HomeParentPage(
+        //             index: 0,
+        //             isexpireToken: false,
+        //           )),
+        // );
+      } else {
+        // Login failed, stay on LoginPage and show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.error!)),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => OnBoardPage()),
+        );
+      }
+    }
+  }
 
   @override
   void initState() {
     // verify();
+    refreshingViaLogin();
+
     _selectedIndex = widget.index;
     super.initState();
   }
@@ -81,22 +122,30 @@ class _HomeParentPageState extends State<HomeParentPage> {
         index: 0,
         isexpireToken: widget.isexpireToken,
       ),
-      HousePlcaePage(
+      ReservationHomePage(
         index: 1,
+        isexpireToken: widget.isexpireToken,
+      ),
+      HousePlcaePage(
+        index: 2,
         isexpireToken: widget.isexpireToken,
       ),
       NotificationPage(
         isexpireToken: widget.isexpireToken,
-        index: 1,
+        index: 3,
       ),
       SettingPage(
         isexpireToken: false,
-        index: 3,
+        index: 4,
       )
     ];
     List<Widget> _pageoffine = <Widget>[
       HomePage(
         index: 0,
+        isexpireToken: widget.isexpireToken,
+      ),
+      ReservationHomePage(
+        index: 1,
         isexpireToken: widget.isexpireToken,
       ),
       HousePlcaePage(
@@ -129,6 +178,8 @@ class _HomeParentPageState extends State<HomeParentPage> {
             onTap: (value) {
               setState(() {
                 // verify();
+                refreshingViaLogin();
+
                 _selectedIndex = value;
               });
             },
@@ -142,10 +193,17 @@ class _HomeParentPageState extends State<HomeParentPage> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(
+                  Icons.favorite,
+                  size: 32,
+                ),
+                label: 'Reservation',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
                   Icons.explore,
                   size: 32,
                 ),
-                label: 'explorez',
+                label: 'Explorez',
               ),
               // BottomNavigationBarItem(
               //   icon: Icon(

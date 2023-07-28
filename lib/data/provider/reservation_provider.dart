@@ -23,7 +23,7 @@ class ReservationProvider {
         url,
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer  ${token.accesstoken}',
+          'Authorization': 'Bearer  ${token.accessToken}',
         },
       );
       log('codepromotion' + response.statusCode.toString());
@@ -99,7 +99,7 @@ class ReservationProvider {
     var url = Uri.parse(
       'http://sunrise-housing.net/api/reservation',
     );
-    var headers = {'Authorization': 'Bearer  ${token.accesstoken}'};
+    var headers = {'Authorization': 'Bearer  ${token.accessToken}'};
 
     var request = http.MultipartRequest(
       'POST',

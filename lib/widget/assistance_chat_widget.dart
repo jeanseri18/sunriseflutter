@@ -28,7 +28,7 @@ class _AssistanceChatWidgetState extends State<AssistanceChatWidget> {
                   (context),
                   MaterialPageRoute(
                     builder: (context) => HomeParentPage(
-                      index: 3,
+                      index: 4,
                       isexpireToken: widget.isexpireToken,
                     ),
                   ));

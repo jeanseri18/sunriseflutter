@@ -30,13 +30,14 @@ class Data {
   String? createdAt;
   String? updatedAt;
 
-  Data(
-      {this.id,
-      this.idUserCustomer,
-      this.idUserProprio,
-      this.date,
-      this.createdAt,
-      this.updatedAt});
+  Data({
+    this.id,
+    this.idUserCustomer,
+    this.idUserProprio,
+    this.date,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];

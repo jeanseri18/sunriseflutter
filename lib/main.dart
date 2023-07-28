@@ -4,10 +4,12 @@ import 'package:sunrise_hosting/features/auth/login/cubit/login_cubit_cubit.dart
 import 'package:sunrise_hosting/features/auth/register/cubit/registercubit_cubit.dart';
 import 'package:sunrise_hosting/features/herbergement/herbergement_list/cubit/hebergement_cubit.dart';
 import 'package:sunrise_hosting/features/home/home_loader.dart';
+import 'package:sunrise_hosting/features/house_place/logic/google_map_place_cubit.dart';
 import 'package:sunrise_hosting/features/notification/cubit/message_cubit.dart';
 import 'package:sunrise_hosting/features/onboard/onboard_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sunrise_hosting/features/paiment/paiment_history/cubit/paiment_cubit.dart';
 import 'package:sunrise_hosting/features/reservation/cubit/reservation_cubit.dart';
 
 void main() {
@@ -60,6 +62,14 @@ class MyApp extends StatelessWidget {
           BlocProvider<ReservationCubit>(
             lazy: false,
             create: (BuildContext context) => ReservationCubit(),
+          ),
+          BlocProvider<GoogleMapPlaceCubit>(
+            lazy: false,
+            create: (BuildContext context) => GoogleMapPlaceCubit(),
+          ),
+          BlocProvider<PaymentCubit>(
+            lazy: false,
+            create: (BuildContext context) => PaymentCubit(),
           )
         ],
         child: MaterialApp(

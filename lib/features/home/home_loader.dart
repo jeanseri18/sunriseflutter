@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -10,6 +11,7 @@ import 'package:sunrise_hosting/features/home/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sunrise_hosting/features/home/home_parent_page.dart';
 import 'package:sunrise_hosting/features/onboard/onboard_page.dart';
+import 'package:sunrise_hosting/gen/assets.gen.dart';
 
 class HomeLoaderPage extends StatefulWidget {
   const HomeLoaderPage({Key? key}) : super(key: key);
@@ -36,8 +38,8 @@ class _HomeLoaderPageState extends State<HomeLoaderPage> {
     var response = AccessToken.fromJson(decodedMap);
 
     // Check if the token is expired
-    if (response.expiresin != null) {
-      var expiresIn = DateTime.parse(response.expiresin!);
+    if (response.expiresIn != null) {
+      var expiresIn = DateTime.parse(response.expiresIn!.toString());
       if (expiresIn.isAfter(DateTime.now())) {
         // Token is still valid
         print('value');
@@ -98,7 +100,9 @@ class _HomeLoaderPageState extends State<HomeLoaderPage> {
   @override
   void initState() {
     super.initState();
-    refreshingViaLogin();
+    Timer(const Duration(seconds: 5), () {
+      refreshingViaLogin();
+    });
     // isTokenValid();
   }
 
@@ -106,9 +110,73 @@ class _HomeLoaderPageState extends State<HomeLoaderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child:
-            CircularProgressIndicator(), // Show a loading indicator while checking login status
+        child: CircleLoader(
+          color: Colors.amber,
+          size: 200,
+        ), // Show a loading indicator while checking login status
       ),
+    );
+  }
+}
+
+class CircleLoader extends StatefulWidget {
+  final double size;
+  final Color color;
+
+  const CircleLoader({Key? key, required this.size, required this.color})
+      : super(key: key);
+
+  @override
+  _CircleLoaderState createState() => _CircleLoaderState();
+}
+
+class _CircleLoaderState extends State<CircleLoader>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 3),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.5).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _animationController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (BuildContext context, Widget? child) {
+        return Container(
+          width: widget.size,
+          height: widget.size,
+          child: Transform.scale(
+            scale: _scaleAnimation.value,
+            child: Image.asset(
+              Assets.images.logo.path,
+              color: widget.color,
+            ),
+          ),
+        );
+      },
     );
   }
 }

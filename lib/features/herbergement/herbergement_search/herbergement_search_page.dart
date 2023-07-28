@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sunrise_hosting/features/herbergement/herbergement_list/hebergement_list_page.dart';
 import 'package:sunrise_hosting/gen/colors.gen.dart';
 
 class HebergementSearchPage extends StatefulWidget {
@@ -22,7 +23,11 @@ class _HebergementSearchPageState extends State<HebergementSearchPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 40,
+                height: 50,
+              ),
+              Text(
+                'Recherche',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
               ),
               Row(
                 children: [
@@ -98,10 +103,10 @@ class _HebergementSearchPageState extends State<HebergementSearchPage> {
               ),
               Wrap(
                 children: [
-                  buildTypePROPERTY(context),
-                  buildTypePROPERTY(context),
-                  buildTypePROPERTY(context),
-                  buildTypePROPERTY(context),
+                  buildTypePROPERTY(context, 'Hotel'),
+                  buildTypePROPERTY(context, 'Residence meuble'),
+                  buildTypePROPERTY(context, 'Location'),
+                  buildTypePROPERTY(context, 'Autre'),
                 ],
               ),
               Text(
@@ -111,29 +116,126 @@ class _HebergementSearchPageState extends State<HebergementSearchPage> {
               const SizedBox(
                 height: 20,
               ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: CheckboxListTile(
+                      title: Text(
+                        'Wi-Fi gratuit',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      value: false,
+                      onChanged: (value) {
+                        setState(() {
+                          // wifiChecked = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: CheckboxListTile(
+                      title: Text(
+                        'Climatisation',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      value: false,
+                      onChanged: (value) {
+                        setState(() {
+                          // climatisationChecked = value!;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: CheckboxListTile(
+                      title: Text(
+                        'Télévision',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      value: false,
+                      onChanged: (value) {
+                        setState(() {
+                          // televisionChecked = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: CheckboxListTile(
+                      title: Text(
+                        'gardien',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      value: false,
+                      onChanged: (value) {
+                        setState(() {
+                          // cuisineChecked = value!;
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: CheckboxListTile(
+                  title: Text(
+                    'parking',
+                    style: TextStyle(fontSize: 13),
+                  ),
+                  value: false,
+                  onChanged: (value) {
+                    setState(() {
+                      // cuisineChecked = value!;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: SizedBox(
-        height: 50,
-        width: MediaQuery.of(context).size.width,
-        child: ElevatedButton(
-          onPressed: () {},
-          child: const Text(
-            'Recherche',
-            style: TextStyle(
-                fontSize: 15, fontFamily: 'Poppins', color: Colors.white),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SizedBox(
+          height: 50,
+          width: MediaQuery.of(context).size.width,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HebergementlistPage(),
+                  maintainState: false,
+                ),
+              );
+            },
+            child: const Text(
+              'Recherche',
+              style: TextStyle(
+                  fontSize: 15, fontFamily: 'Poppins', color: Colors.white),
+            ),
           ),
         ),
       ),
     );
   }
 
-  Container buildTypePROPERTY(BuildContext context) {
+  Container buildTypePROPERTY(BuildContext context, String title) {
     return Container(
       padding: const EdgeInsets.all(0.0),
-      height: 100,
+      height: 60,
       width: MediaQuery.of(context).size.width * 0.4,
       margin: const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
       decoration: BoxDecoration(
@@ -146,10 +248,10 @@ class _HebergementSearchPageState extends State<HebergementSearchPage> {
       ),
       child: ListTile(
           title: Text(
-        '   item.text',
+        ' $title',
         style: const TextStyle(
           color: Colors.black,
-          fontSize: 16,
+          fontSize: 13,
         ),
       )),
     );

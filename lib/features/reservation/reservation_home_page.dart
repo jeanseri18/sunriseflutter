@@ -3,22 +3,22 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:sunrise_hosting/data/model/reservation_list_model.dart';
 import 'package:sunrise_hosting/features/home/home_parent_page.dart';
 import 'package:sunrise_hosting/features/reservation/cubit/reservation_cubit.dart';
 import 'package:sunrise_hosting/gen/assets.gen.dart';
-import 'package:sunrise_hosting/gen/colors.gen.dart';
 
-class OrderPage extends StatefulWidget {
-  const OrderPage({super.key, required this.isexpireToken});
+import '../../data/model/reservation_list_model.dart';
 
+class ReservationHomePage extends StatefulWidget {
+  const ReservationHomePage(
+      {super.key, required this.isexpireToken, required this.index});
+  final int index;
   final bool isexpireToken;
-
   @override
-  State<OrderPage> createState() => _OrderPageState();
+  State<ReservationHomePage> createState() => _ReservationHomePageState();
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _ReservationHomePageState extends State<ReservationHomePage> {
   @override
   void initState() {
     context.read<ReservationCubit>().getReservationList();
@@ -32,26 +32,11 @@ class _OrderPageState extends State<OrderPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Commande',
+          'Mes Reservations',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.push(
-                (context),
-                MaterialPageRoute(
-                  builder: (context) => HomeParentPage(
-                    index: 4,
-                    isexpireToken: widget.isexpireToken,
-                  ),
-                ));
-          },
-        ),
+        automaticallyImplyLeading: false,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -240,7 +225,7 @@ class _OrderPageState extends State<OrderPage> {
 
 // Utilisez imageUrl pour afficher l'image dans votre code
 
-    return model.isOwner == true
+    return model.isOwner == false
         ? SizedBox(
             height: 200,
             child: GestureDetector(
@@ -331,18 +316,16 @@ class _OrderPageState extends State<OrderPage> {
                                 Wrap(
                                   spacing: 0.7,
                                   children: [
-                                    if (model.isOwner == true)
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
-                                        child: ElevatedButton(
-                                            onPressed: () {},
-                                            child: Text(
-                                              'Confirmer',
-                                              style: TextStyle(fontSize: 11),
-                                            )),
-                                      ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      child: ElevatedButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            'Payer',
+                                            style: TextStyle(fontSize: 11),
+                                          )),
+                                    ),
                                     Spacer(),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width *
