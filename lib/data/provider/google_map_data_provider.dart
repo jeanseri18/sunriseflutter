@@ -7,7 +7,7 @@ import 'package:sunrise_hosting/data/model/google_details_model.dart';
 import 'package:sunrise_hosting/data/model/google_place_model.dart';
 
 class GoogleMapDataProvider {
-  static const _apiKey = 'AIzaSyD0OFIF-WwrQRVpD3acbegQoIGapwtkAOk';
+  static const _apiKey = '';
   static const _baseUrl = 'https://maps.googleapis.com';
   static String get _searchPlaceUrl =>
       '$_baseUrl/maps/api/place/autocomplete/json';
